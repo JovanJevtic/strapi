@@ -49,6 +49,7 @@ interface StrapiAppConstructorArgs extends Partial<Pick<StrapiApp, 'appPlugins'>
     theme?: { light: DefaultTheme; dark: DefaultTheme };
     translations?: Record<string, Record<string, string>>;
     tutorials?: boolean;
+    languageNativeNames?: Record<string, string>;
   };
 }
 
@@ -108,6 +109,7 @@ class StrapiApp {
     themes: { light: lightTheme, dark: darkTheme },
     translations: {},
     tutorials: true,
+    languageNativeNames: languageNativeNames,
   };
 
   /**
@@ -257,6 +259,13 @@ class StrapiApp {
         'en',
         ...(customConfig.locales?.filter((loc) => loc !== 'en') || []),
       ];
+    }
+
+    if (customConfig.languageNativeNames) {
+      this.configurations.languageNativeNames = {
+        ...this.configurations.languageNativeNames,
+        ...customConfig.languageNativeNames,
+      };
     }
 
     if (customConfig.auth?.logo) {
@@ -472,7 +481,10 @@ class StrapiApp {
   runHookParallel = (name: string) => this.hooksDict[name].runParallel();
 
   render() {
-    const localeNames = pick(languageNativeNames, this.configurations.locales || []);
+    const localeNames = pick(
+      this.configurations.languageNativeNames,
+      this.configurations.locales || []
+    );
     const locale = (localStorage.getItem(LANGUAGE_LOCAL_STORAGE_KEY) ||
       'en') as keyof typeof localeNames;
 
