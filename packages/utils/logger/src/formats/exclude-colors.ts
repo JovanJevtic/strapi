@@ -1,12 +1,7 @@
 import { format } from 'winston';
-
-/**
- * This will remove the chalk color codes from the message provided.
- * It's used to log plain text in the log file
- */
-export default format.printf(({ message }) => {
+export default format.printf(({ message }): string => {
   if (typeof message !== 'string') {
-    return message;
+    return `${message}`;
   }
 
   return message.replace(
